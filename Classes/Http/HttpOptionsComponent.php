@@ -29,11 +29,12 @@ class HttpOptionsComponent implements ComponentInterface
             return;
         }
         // no matching graphQL endpoint configured => skip
-        if (!isset($this->endpoints[$httpRequest->getRelativePath()])) {
+        if (!isset($this->endpoints[substr($httpRequest->getUri()->getPath(), 1)])) {
             return;
         }
         $httpResponse = $componentContext->getHttpResponse();
-        $httpResponse->setHeader('Allow', 'GET, POST');
+        $httpResponse = $httpResponse->withHeader('Allow', 'GET, POST');
+        $componentContext->replaceHttpResponse($httpResponse);
         $componentContext->setParameter(ComponentChain::class, 'cancel', true);
     }
 }
