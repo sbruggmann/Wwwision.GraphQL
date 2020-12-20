@@ -1,12 +1,11 @@
 Neos:
   Flow:
     http:
-      chain:
-        'process':
-          chain:
-            'graphQLOptions':
-              position: 'before routing'
-              component: 'Wwwision\GraphQL\Http\HttpOptionsComponent'
+      middlewares:
+        'graphQLOptions':
+          position: 'before routing'
+#          position: 'before requestUriHostParameter'
+          middleware: 'Wwwision\GraphQL\Middleware\HttpOptionsMiddleware'
 
 Wwwision:
   GraphQL:

@@ -8,7 +8,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * A simple HTTP Component that captures OPTIONS requests and responds with a general "Allow: GET, POST" header if a matching graphQL endpoint is configured
+ * A simple HTTP Middleware that captures OPTIONS requests and responds with a general "Allow: GET, POST" header if a matching graphQL endpoint is configured
  */
 class HttpOptionsMiddleware implements MiddlewareInterface
 {
@@ -21,16 +21,16 @@ class HttpOptionsMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         if ($request->getMethod() !== 'OPTIONS') {
-            $next->handle($request);
+            return $next->handle($request);
         }
 
         $endpoint = ltrim($request->getUri()->getPath(), '\/');
         // no matching graphQL endpoint configured => skip
         if (!isset($this->endpoints[$endpoint])) {
-            $next->handle($request);
+            return $next->handle($request);
         }
 
         $request = $request->withHeader('Allow', 'GET, POST');
-        $next->handle($request);
+        return $next->handle($request);
     }
 }
